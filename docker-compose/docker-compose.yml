@@ -1,0 +1,16 @@
+# docker-compose example with traefik
+version: "3.7"
+services:
+  redir:
+    container_name: redirick
+    image: ghcr.io/dyrector-io/redirick:2
+    ports:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.xor-redir.entrypoints=websecure"
+      - "traefik.http.routers.xor-redir.rule=Host(`${SOURCE_DOMAIN}`)"
+      - "traefik.http.routers.xor-redir.tls.certresolver=le"
+    environment:
+      REDIRECT_TARGET: "https://${TARGET_DOMAIN}"
+    user: "1000"
