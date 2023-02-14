@@ -25,29 +25,30 @@ type AppConfig struct {
 }
 
 // Parse flags and set defaults
-func LoadConfig() *AppConfig {
+func LoadConfig(name string, args []string) *AppConfig {
+	flags := flag.NewFlagSet(name, flag.ContinueOnError)
 	if Version != "" {
 		Version = "dev"
 	}
 
 	conf := &AppConfig{}
-	flag.StringVar(&conf.Target, "target", DefaultRedirect, "target URL for redirect either as param or 1st argument")
-	flag.IntVar(&conf.StatusCode, "code", DefaultStatusCode, "HTTP status code used for redirects")
-	flag.IntVar(&conf.Port, "port", DefaultPort, "listening server port")
-	flag.Parse()
+	flags.StringVar(&conf.Target, "target", DefaultRedirect, "target URL for redirect either as param or 1st argument")
+	flags.IntVar(&conf.StatusCode, "code", DefaultStatusCode, "HTTP status code used for redirects")
+	flags.IntVar(&conf.Port, "port", DefaultPort, "listening server port")
+	flags.Parse(args)
 
-	arg1 := flag.Arg(0)
+	arg1 := flags.Arg(0)
+	if arg1 != "" && conf.Target != DefaultRedirect {
+		fmt.Print("both flag and first argurment is is set, argument takes priority")
+	}
 	if arg1 != "" {
 		conf.Target = arg1
 	} else if arg1 == "help" {
-		flag.Usage()
-		os.Exit(0)
+		flags.Usage()
+		os.Exit(2)
 	} else if arg1 == "version" {
 		fmt.Printf("version: %v", Version)
-		os.Exit(0)
-	} else {
-		log.Printf("No target URL specified as param or argument, defaulting to rickrolling redirect!")
-		conf.Target = DefaultRedirect
+		os.Exit(2)
 	}
 
 	return conf
@@ -62,7 +63,7 @@ func Server(conf *AppConfig) error {
 }
 
 func main() {
-	config := LoadConfig()
+	config := LoadConfig(os.Args[0], os.Args[1:])
 	err := Server(config)
 	if err != nil {
 		log.Fatal(err)

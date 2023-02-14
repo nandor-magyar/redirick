@@ -24,6 +24,11 @@ You can change the `REDIRECT_TARGET` with an environment variable, the bound `PO
 https://www.searchenginejournal.com/301-vs-302-redirects-seo/299843/#close
 Based on this article as Google stated multiple times that 302 does not hurt link values, since 301 request are cached eternally, 302 should theoretically be better choice. Feel free to comment on this.
 
+## Headers
+As far as standards can go, redirect header preservation behavior is not defined by HTTP itself.
+
+Headers are forwarded here.
+
 ## Usage
 If your use-case is missing, file a PR I am open to anything.
 
@@ -32,7 +37,6 @@ If you need short-term temporal redirect, you can just go install this to your t
 ```
 go install github.com/nandor-magyar/redirick@main
 redirick help
-
 ``` 
 
 ### docker-compose
@@ -47,7 +51,7 @@ docker-compose up -d
 kubectl apply -k kustomize
 ```
 
-### dyrectorio
+### dyrectorio (soon)
 Based on the labels declared on the image you have to only fill-in the required env variables and it should work out of the box if you have a node running. No-code, no hassle, just the two variables.
 
 ## DIY

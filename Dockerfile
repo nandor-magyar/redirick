@@ -8,4 +8,4 @@ LABEL org.dyrectorio.env.REDIRECT=required,url
 
 COPY --chown=nonroot:nonroot ./redirick /redirick
 EXPOSE 8080
-ENTRYPOINT ["/redir"]
+ENTRYPOINT ["/redirick"]
