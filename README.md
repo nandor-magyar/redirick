@@ -15,6 +15,7 @@ I could not find anything that is:
 - rootless
 - environment configurable
 - easy to deploy
+- never gonna give you up
 
 ## What it does
 
