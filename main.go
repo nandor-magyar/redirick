@@ -59,6 +59,9 @@ func Server(conf *AppConfig) error {
 	log.Printf("Redirick will forward to: %s, listening on %d, will use status code %d.", conf.Target, conf.Port, conf.StatusCode)
 	mux := http.NewServeMux()
 	mux.Handle("/", http.RedirectHandler(conf.Target, conf.StatusCode))
+	mux.Handle("/healthz", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
 	return http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), mux)
 }
 

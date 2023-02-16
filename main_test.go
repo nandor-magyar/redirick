@@ -63,21 +63,31 @@ func TestServer(t *testing.T) {
 		assert.Nilf(t, err, "Expected server to start without errors, got %v", err)
 	}()
 
-	// Give the server some time to start
+	// todo: more elegant options without messing with the code. wait for healtheck?
 	time.Sleep(100 * time.Millisecond)
 
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8090/", nil)
-	assert.Nilf(t, err, "Unexpected error on request creation, got %v", err)
+	t.Run("Redirect", func(t *testing.T) {
+		// Give the server some time to start
 
-	client := new(http.Client)
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return http.ErrUseLastResponse
-	}
-	res, err := client.Do(req)
-	assert.Nilf(t, err, "Unexecpted response error, got %v", err)
-	assert.Equalf(t, http.StatusFound, res.StatusCode, "Expected status code to be %d, got %d", http.StatusFound, res.StatusCode)
+		req, err := http.NewRequest(http.MethodGet, "http://localhost:8090/", nil)
+		assert.Nilf(t, err, "Unexpected error on request creation, got %v", err)
 
-	loc, err := res.Location()
-	assert.Nilf(t, err, "Unexpected error while getting http location", err)
-	assert.Equalf(t, "https://dyrectorio.com", loc.String(), "Expected value should be https://dyrectorio.com got %v", loc.String())
+		client := new(http.Client)
+		client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		}
+		res, err := client.Do(req)
+		assert.Nilf(t, err, "Unexecpted response error, got %v", err)
+		assert.Equalf(t, http.StatusFound, res.StatusCode, "Expected status code to be %d, got %d", http.StatusFound, res.StatusCode)
+
+		loc, err := res.Location()
+		assert.Nilf(t, err, "Unexpected error while getting http location", err)
+		assert.Equalf(t, "https://dyrectorio.com", loc.String(), "Expected value should be https://dyrectorio.com got %v", loc.String())
+	})
+
+	t.Run("Healthcheck", func(t *testing.T) {
+		resp, err := http.Get("http://localhost:8090/healthz")
+		assert.Nilf(t, err, "Unexpected error on healthcheck, got %v", err)
+		assert.Equalf(t, http.StatusOK, resp.StatusCode, "Healthcheck should have status code (200), got: %d", resp.StatusCode)
+	})
 }

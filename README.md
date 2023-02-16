@@ -2,6 +2,11 @@
 
 A lightweight, by-default rickrolling (configurable), redirect-only webserver that can be used CLI tool or as a container.
 
+<p align="center">
+    <img src="./rick-rolling.png?raw=true" alt="Rick rolling on a roller (8" />
+</p>
+
+
 ## Story
 I wanted a simple container that only does redirect and needs the least possible privileges,
 I could not find anything that is:
@@ -10,7 +15,6 @@ I could not find anything that is:
 - rootless
 - environment configurable
 - easy to deploy
-So here it is.
 
 ## What it does
 
